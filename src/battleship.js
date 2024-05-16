@@ -1,18 +1,37 @@
 class BattleShip {
-  constructor(length) {
-    this.length = length;
-    this.hit = 0;
-    this.sunk = false;
+  #sunk;
+  #vertical;
+  #size;
+
+  constructor(length, vertical) {
+    this.#size = length;
+    this.hitCount = 0;
+    this.#sunk = false;
+    this.#vertical = vertical;
   }
 
   hit() {
-    this.hit++;
+    this.hitCount++;
+    this.sink();
   }
 
-  sunk() {
-    if (this.hit >= this.length) {
-      this.sunk = true;
+  sink() {
+    if (this.hitCount >= this.size) {
+      this.#sunk = true;
     }
-    return this.sunk;
+  }
+
+  get sunk() {
+    return this.#sunk;
+  }
+
+  get vertical() {
+    return this.#vertical;
+  }
+
+  get size() {
+    return this.#size;
   }
 }
+
+export default BattleShip;
