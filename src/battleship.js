@@ -1,6 +1,8 @@
 class BattleShip {
   #sunk;
+
   #vertical;
+
   #size;
 
   constructor(length, vertical) {
@@ -11,7 +13,7 @@ class BattleShip {
   }
 
   hit() {
-    this.hitCount++;
+    this.hitCount += 1;
     this.sink();
   }
 
