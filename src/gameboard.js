@@ -1,10 +1,17 @@
 import BattleShip from './battleship';
 
 class Gameboard {
+  #board;
+
   constructor() {
-    this.board = Gameboard.constructBoard();
-    this.missedAttacks = [[0, 1]];
+    this.#board = Gameboard.constructBoard();
+    this.missedAttacks = [];
     this.successfulAttacks = [];
+    this.placedShips = [];
+  }
+
+  checkFleet() {
+    return this.placedShips.every((ship) => ship.sunk);
   }
 
   receiveAttack(row, column) {
@@ -20,7 +27,6 @@ class Gameboard {
 
     if (isAlreadyMissed || isAlreadyHit) {
       return 'you already targeted this position, try again';
-      // console.log('You have already targeted this position, try again');
     }
     const attackCoords = this.board[row][column];
     if (attackCoords instanceof BattleShip) {
@@ -28,14 +34,13 @@ class Gameboard {
       this.successfulAttacks.push([row, column]);
       return attackCoords.sunk ? 'Ship sinking' : 'Successful hit';
     }
-    // console.log('you missed');
     this.missedAttacks.push([row, column]);
-    return 'you missed';
+    return 'You missed';
   }
 
   static constructBoard() {
     const board = [];
-    for (let row = 0; row < 10; row) {
+    for (let row = 0; row < 10; row += 1) {
       board.push([]);
       for (let col = 0; col < 10; col += 1) {
         board[row].push('~');
@@ -54,21 +59,19 @@ class Gameboard {
       for (let i = 0; i < shipLength; i += 1) {
         gridsArray.push([row + i, column]);
       }
-      // console.log('gridsArray:', gridsArray);
       // check if proposed position is currently occupied by an existing ship
       const isOccupied = gridsArray.some(
         (position) =>
           this.board[position[0]][position[1]] instanceof BattleShip,
       );
       if (isOccupied) {
-        // console.log('vertical occupied');
-        return;
+        return 'Position Occupied';
       }
       // place ship at specified coordinates
       for (let i = 0; i < shipLength; i += 1) {
         this.board[row + i][column] = Ship; // vertical
+        this.placedShips.push(Ship);
       }
-
       // horizontal clause
     } else {
       for (let i = 0; i < shipLength; i += 1) {
@@ -80,17 +83,23 @@ class Gameboard {
           this.board[position[0]][position[1]] instanceof BattleShip,
       );
       if (isOccupied) {
-        // console.log('horizontal occupied');
-      } else {
-        // place ship at specified coordinates
-        for (let i = 0; i < shipLength; i += 1) {
-          this.board[row][column + i] = Ship;
-        }
+        return 'Position Occupied';
+      }
+      // place ship at specified coordinates
+      for (let i = 0; i < shipLength; i += 1) {
+        this.board[row][column + i] = Ship;
+        this.placedShips.push(Ship);
       }
     }
 
-    // this.board[row][column] = Ship;
     // console.log(this.board);
+    return 'Ship Placed Successfully';
+
+    // this.board[row][column] = Ship;
+  }
+
+  get board() {
+    return this.#board;
   }
 }
 
