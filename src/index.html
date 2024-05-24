@@ -9,6 +9,7 @@
   <body>
     <div id="content">
       <h1 class="greeting">BattleShip</h1>
+      <p class="description"></p>
       <main>
         <div class="form">
           <form action="" method="post">
@@ -19,15 +20,21 @@
                 id="player01"
                 name="player01_name"
                 placeholder="Choose a name"
+                required
               />
             </div>
             <button type="submit" id="player01-name-submit">Submit</button>
           </form>
         </div>
-        <h3 id="player-1-title" class="hidden">Player 1</h3>
-        <div id="container-1" class="container hidden"></div>
-        <h3 id="player-2-title" class="hidden">CPU</h3>
-        <div id="container-2" class="container hidden"></div>
+        <div id="player-1-ui">
+          <h3 id="player-1-title" class="hidden">Player 1</h3>
+          <div id="container-1" class="container hidden"></div>
+        </div>
+
+        <div id="player-2-ui">
+          <h3 id="player-2-title" class="hidden">CPU</h3>
+          <div id="container-2" class="container hidden"></div>
+        </div>
       </main>
       <aside class="hidden">
         <h2>Options</h2>

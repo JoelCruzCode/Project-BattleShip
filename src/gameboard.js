@@ -3,11 +3,13 @@ import BattleShip from './battleship';
 class Gameboard {
   #board;
 
+  #placedShips;
+
   constructor() {
     this.#board = Gameboard.constructBoard();
     this.missedAttacks = [];
     this.successfulAttacks = [];
-    this.placedShips = [];
+    this.#placedShips = [];
   }
 
   checkFleet() {
@@ -70,7 +72,9 @@ class Gameboard {
       // place ship at specified coordinates
       for (let i = 0; i < shipLength; i += 1) {
         this.board[row + i][column] = Ship; // vertical
-        this.placedShips.push(Ship);
+        Ship.positions.push([row + i, column]);
+
+        this.#placedShips.push(Ship);
       }
       // horizontal clause
     } else {
@@ -88,11 +92,13 @@ class Gameboard {
       // place ship at specified coordinates
       for (let i = 0; i < shipLength; i += 1) {
         this.board[row][column + i] = Ship;
-        this.placedShips.push(Ship);
+        Ship.positions.push([row, column + i]);
+        this.#placedShips.push(Ship);
       }
     }
 
     // console.log(this.board);
+    // console.log(this.#placedShips);
     return 'Ship Placed Successfully';
 
     // this.board[row][column] = Ship;
@@ -100,6 +106,10 @@ class Gameboard {
 
   get board() {
     return this.#board;
+  }
+
+  get placedShips() {
+    return this.#placedShips;
   }
 }
 

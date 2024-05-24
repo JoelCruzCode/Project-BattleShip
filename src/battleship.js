@@ -10,6 +10,7 @@ class BattleShip {
     this.hitCount = 0;
     this.#sunk = false;
     this.#vertical = vertical;
+    this.positions = [];
   }
 
   hit() {
