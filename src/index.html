@@ -1,12 +1,42 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Battle Ship</title>
+    <link rel="stylesheet" href="styles/style.css" />
   </head>
   <body>
-    <div id="content"></div>
-    <!-- <script defer src="../dist/bundle.js"></script> -->
+    <div id="content">
+      <h1 class="greeting">BattleShip</h1>
+      <main>
+        <div class="form">
+          <form action="" method="post">
+            <div class="form-row">
+              <label for="player-1-name">Player 1</label>
+              <input
+                type="text"
+                id="player01"
+                name="player01_name"
+                placeholder="Choose a name"
+              />
+            </div>
+            <button type="submit" id="player01-name-submit">Submit</button>
+          </form>
+        </div>
+        <h3 id="player-1-title" class="hidden">Player 1</h3>
+        <div id="container-1" class="container hidden"></div>
+        <h3 id="player-2-title" class="hidden">CPU</h3>
+        <div id="container-2" class="container hidden"></div>
+      </main>
+      <aside class="hidden">
+        <h2>Options</h2>
+        <h3>Place your Ships</h3>
+        <p>once player places all ships on map reveal start game button</p>
+        <button id="start-btn">Start Game</button>
+      </aside>
+
+      <div id="footer"></div>
+    </div>
   </body>
 </html>

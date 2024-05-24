@@ -1,4 +1,86 @@
+/* Reset some default margins and paddings */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  padding-top: 100px;
+  background-color: grey;
+  /* font-family: Arial, Helvetica, sans-serif;
+  font-size: 18px; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+}
+
+.content {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  background-color: purple;
+  /* justify-content: end;
+  align-items: center; */
+}
+
+main {
+  width: 100%;
+  background-color: #0d15e4;
+}
+
+aside {
+  width: 100%;
+  background-color: aqua;
+}
+
 .greeting {
   color: green;
-  font-family: "Rubik", sans-serif;
+  font-family: 'Rubik', sans-serif;
+  text-align: center;
+  font-size: 7rem;
+  padding-bottom: 3rem;
+}
+
+.form {
+  width: 600px;
+  padding: 20px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.grid {
+  border: 1px solid black;
+  background-color: white;
+}
+
+.ship {
+  background-color: green;
+}
+
+.container {
+  margin: 50px 0px;
+  align-self: center;
+  height: 800px;
+  width: 800px;
+  display: inline-grid;
+  border: 5px solid black;
+  border-radius: 4px;
+  grid-template-columns: repeat(10, auto);
+  grid-gap: 1px;
+  box-shadow: 0 0 30px #0d15e4;
+}
+
+.hidden {
+  display: none;
+}
+
+#player-1-title,
+#player-2-title {
+  text-align: center;
+  font-size: 2.5rem;
 }
