@@ -7,16 +7,16 @@ class Player {
 
   constructor(name) {
     this.#board = new Gameboard();
-    this.name = name;
+    this.#name = name;
   }
 
   get board() {
     return this.#board;
   }
 
-  //   get name() {
-  //     return this.name;
-  //   }
+  get name() {
+    return this.#name;
+  }
 }
 
 export default Player;

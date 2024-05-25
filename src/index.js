@@ -7,16 +7,21 @@ import BattleShip from './battleship';
 // selectors
 const nameBtn = document.querySelector('#player01-name-submit');
 const startBtn = document.querySelector('#start-btn');
+const resetBtn = document.querySelector('#reset-btn');
 // create predetermined coordinates of ships
 const Player1 = new Player('Joel');
-const player1Board = Player1.board.board;
+const description = document.querySelector('.description');
+const options = document.querySelector('#options');
+
+const player1Board = Player1.board.board; // get board from board class
 Player1.board.placeShip([0, 9], 3, true);
 Player1.board.placeShip([0, 0], 2, true);
 Player1.board.placeShip([6, 3], 4, false);
 Player1.board.placeShip([4, 5], 5, false);
 
 const Player2 = new Player('Ai');
-const player2Board = Player2.board.board;
+const player2Board = Player2.board.board; // get board from board class
+console.log(player2Board);
 Player2.board.placeShip([0, 9], 3, true);
 Player2.board.placeShip([0, 0], 2, true);
 Player2.board.placeShip([6, 3], 4, false);
@@ -47,34 +52,57 @@ function createGrids(parentElement, board) {
 createGrids(container1, player1Board);
 createGrids(container2, player2Board);
 
-function submitPlayerName() {
+function submitPlayerName(event) {
+  event.preventDefault();
   const input = document.querySelector('#player01');
   const playerTitle = document.querySelector('#player-1-title');
   const form = document.querySelector('.form');
   const aside = document.querySelector('aside');
-  const player = new Player(input.value);
+
+  // Check if the input is empty
+  if (!input.value.trim()) {
+    description.classList.remove('hidden');
+    description.textContent = 'Please enter a valid name';
+    return;
+  }
+
+  // Proceed with the form submission logic
+  // const player = new Player(input.value);
   playerTitle.textContent = input.value;
   container1.classList.remove('hidden');
   playerTitle.classList.remove('hidden');
   form.classList.add('hidden');
   aside.classList.remove('hidden');
-  return player;
+  description.textContent = '';
 }
 
-function handleAttackResult(attack, index, e) {
-  const description = document.querySelector('.description');
+function startUserInterface(event) {
+  event.preventDefault();
+  startBtn.classList.add('hidden');
+  container2.classList.remove('hidden');
+  const player2Title = document.querySelector('#player-2-title');
+  player2Title.classList.remove('hidden');
+  // const optionsDescription = document.querySelector(
+  //   '.options-ships-description',
+  // );
+  // optionsDescription.classList.add('hidden');
+  options.classList.add('hidden');
+}
+
+function handleAttackResult(attack, index, event) {
+  // const description = document.querySelector('.description');
   description.textContent = attack;
   if (attack === 'you already targeted this position, try again') {
     console.log('move this clause');
   } else if (attack === 'Successful hit') {
-    e.target.classList.add('hit'); // orange
+    event.target.classList.add('hit'); // orange
   } else if (attack === 'Ship sinking') {
     const [row, column] = index;
     const sinkingShip = player2Board[row][column];
     // traverse the positions of the sinking ship to update the UI(red)
     sinkingShip.positions.forEach((pos) => {
       const [r, c] = pos;
-      const container = e.target.parentNode.id;
+      const container = event.target.parentNode.id;
       console.log(container);
       const gridEl = document.querySelector(
         `#${container} [data-value="[${r},${c}]"]`,
@@ -83,41 +111,55 @@ function handleAttackResult(attack, index, e) {
     });
     // FIXME is me referencing ship making this method tightly coupled ?
   } else {
-    e.target.classList.add('miss');
+    event.target.classList.add('miss');
   }
 }
 
+function gameOverUserInterface(player) {
+  const playerName = player.name;
+  // const description = document.querySelector('.description');
+  description.textContent = `Game over, ${playerName} wins!`;
+  // const resetBtn = document.querySelector('#reset-btn');
+  options.classList.remove('hidden');
+  resetBtn.classList.remove('hidden');
+}
+
+function AttackController(event) {
+  if (event.target.classList.contains('grid')) {
+    const index = event.target.dataset.value;
+    const [row, column] = JSON.parse(index);
+    const attack = Player2.board.receiveAttack(row, column);
+    handleAttackResult(attack, [row, column], event);
+    if (Player2.board.checkFleet()) {
+      gameOverUserInterface(Player1);
+    }
+  }
+}
+
+// function startGame() {
+//   // this function should create  each players class and respective boards based  the selection of the user interface
+// }
+function resetGame() {
+  // reset the games classes
+}
 // event listeners
 
 // enter player name
-nameBtn.addEventListener('click', (e) => {
-  e.preventDefault();
-  submitPlayerName();
-});
+nameBtn.addEventListener('click', submitPlayerName);
 
 // finalize ship positions
 
 // start game
-startBtn.addEventListener('click', (e) => {
-  e.preventDefault();
-  startBtn.classList.add('hidden');
-  container2.classList.remove('hidden');
-  const player2Title = document.querySelector('#player-2-title');
-  player2Title.classList.remove('hidden');
-});
+startBtn.addEventListener('click', startUserInterface);
 
-container2.addEventListener('click', (e) => {
-  console.log(e.target.classList.contains('grid'));
-  if (e.target.classList.contains('grid')) {
-    const index = e.target.dataset.value;
-    const [row, column] = JSON.parse(index);
+resetBtn.addEventListener('click', resetGame);
 
-    const attack = Player2.board.receiveAttack(row, column);
-    handleAttackResult(attack, [row, column], e);
-  }
-});
+container2.addEventListener('click', AttackController);
 
 // Beta will only be playable against the CPU
+// TODO create event handler functions
+
+// TODO add dom elements to top of file
 
 // TODO implement CPU logic/moveset reference tic tac?
 
@@ -126,3 +168,5 @@ container2.addEventListener('click', (e) => {
 // TODO create end game UI render, when should i check if the game is over after each turn or each hit?
 
 // TODO abstract the gameController from index.js
+
+// TODO rename functions?
