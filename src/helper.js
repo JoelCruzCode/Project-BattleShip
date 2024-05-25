@@ -53,3 +53,17 @@
 //     e.target.classList.add('hit');
 //   }
 // });
+
+/// refactored this event listener by putting the conditions of container 2 and handleAttack rEsult together
+// container2.addEventListener('click', (e) => {
+//   if (e.target.classList.contains('grid')) {
+//     const index = e.target.dataset.value;
+//     const [row, column] = JSON.parse(index);
+
+//     const attack = Player2.board.receiveAttack(row, column);
+//     handleAttackResult(attack, [row, column], e);
+//     if (Player2.board.checkFleet()) {
+//       gameOverUserInterface(Player1);
+//     }
+//   }
+// });
