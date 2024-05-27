@@ -3,11 +3,11 @@ import Gameboard from './gameboard';
 class Player {
   #board;
 
-  #name;
+  #playerName;
 
   constructor(name) {
     this.#board = new Gameboard();
-    this.#name = name;
+    this.#playerName = name;
   }
 
   get board() {
@@ -15,7 +15,11 @@ class Player {
   }
 
   get name() {
-    return this.#name;
+    return this.#playerName;
+  }
+
+  set name(name) {
+    this.#playerName = name;
   }
 }
 
