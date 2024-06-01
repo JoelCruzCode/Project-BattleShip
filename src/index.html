@@ -36,11 +36,38 @@
           <div id="container-2" class="container hidden"></div>
         </div>
       </main>
-      <aside id="options" class="hidden">
-        <h2>Options</h2>
+      <aside class="options hidden">
+        <h2 class="options-title">Options</h2>
         <button id="reset-btn" class="hidden">Reset</button>
-        <h3 class="options-ships-description">Place your Ships</h3>
-
+        <h3 class="options-description">Place your Ships</h3>
+        <div class="axis-container">
+          <button id="vertical-btn">Vertical</button>
+          <button id="horizontal-btn">Horizontal</button>
+        </div>
+        <div id="fleet-container">
+          <div class="ship-container size-2" data-size="2" data-axis="vertical">
+            <div class="cell"></div>
+            <div class="cell"></div>
+          </div>
+          <div class="ship-container size-3" data-size="3" data-axis="vertical">
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+          </div>
+          <div class="ship-container size-4" data-size="4" data-axis="vertical">
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+          </div>
+          <div class="ship-container size-5" data-size="5" data-axis="vertical">
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+          </div>
+        </div>
         <button id="start-btn">Start Game</button>
       </aside>
 

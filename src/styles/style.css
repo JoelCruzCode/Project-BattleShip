@@ -16,14 +16,17 @@ body {
   height: 100vh;
 }
 
+button {
+  width: 5rem;
+  height: 3rem;
+}
+
 .content {
   width: 100%;
   max-width: 1200px;
   display: flex;
   flex-direction: column;
   background-color: purple;
-  /* justify-content: end;
-  align-items: center; */
 }
 
 main {
@@ -70,6 +73,10 @@ aside {
   background-color: green;
 }
 
+.highlight {
+  background-color: rgb(54, 241, 54);
+}
+
 .miss {
   background-color: grey;
 }
@@ -95,14 +102,18 @@ aside {
   box-shadow: 0 0 30px #0d15e4;
 }
 
-.hidden {
-  display: none;
+.ship-icon {
+  margin: 30px 50px;
+  align-self: center;
+  height: 100px;
+  width: 100px;
+  display: inline-grid;
+  border: 5px solid black;
+  border-radius: 4px;
+  grid-template-columns: repeat(1, auto);
+  grid-gap: 1px;
+  box-shadow: 0 0 30px #0d15e4;
 }
-
-/* #player-1-ui,
-#player-2-ui {
-  width: 50%;
-} */
 
 #player-1-title,
 #player-2-title {
@@ -112,8 +123,104 @@ aside {
 
 .options {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  /* justify-content: center; */
   align-items: center;
 }
-#reset-btn {
+/* #reset-btn {
+} */
+
+.options-title {
+  margin: 5px 0;
 }
+
+.options-description {
+  margin-bottom: 5px;
+}
+.axis-container {
+  display: flex;
+  justify-content: center;
+  width: 450px;
+  gap: 5px;
+}
+
+#fleet-container {
+  display: flex;
+  gap: 5px;
+  height: 450px;
+  width: 450px;
+  justify-content: center;
+  margin-bottom: 20px;
+  /* flex-direction: column; */
+}
+
+.ship-container {
+  display: flex;
+  /* justify-content: start; */
+  /* flex-direction: row; */
+  flex-direction: column;
+  justify-content: end;
+}
+
+.cell {
+  background-color: white;
+  width: 80px;
+  height: 80px;
+  border: 4px solid black;
+}
+
+.switch-axis {
+  flex-direction: column;
+}
+
+.hidden {
+  display: none;
+}
+/* Below is if i use Grid 
+
+/* .ship-container { */
+/* display: grid;
+  height: 160px;
+  width: 80px;
+  border: 5px solid black;
+  border-radius: 4px;
+  gap: 1px;
+  grid-template-rows: 1fr 1fr;
+  grid-template-columns: 1fr;
+} */
+
+/* .ship-container2 {
+
+  display: grid;
+  height: 240px;
+  width: 80px;
+  border: 5px solid black;
+  border-radius: 4px;
+  gap: 1px;
+  grid-template-rows: 1fr 1fr 1fr;
+  grid-template-columns: 1fr;
+}
+
+.ship-container3 {
+ 
+  display: grid;
+  height: 320px;
+  width: 80px;
+  border: 5px solid black;
+  border-radius: 4px;
+  gap: 1px;
+  grid-template-rows: 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr;
+}
+
+.ship-container4 {
+
+  display: grid;
+  height: 400px;
+  width: 80px;
+  border: 5px solid black;
+  border-radius: 4px;
+  gap: 1px;
+  grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr;
+} */
