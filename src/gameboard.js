@@ -1,4 +1,5 @@
 import BattleShip from './battleship';
+import randomCoords from './helper';
 
 class Gameboard {
   #board;
@@ -10,6 +11,13 @@ class Gameboard {
     this.missedAttacks = [];
     this.successfulAttacks = [];
     this.#placedShips = [];
+  }
+
+  resetBoard() {
+    this.#board = Gameboard.constructBoard();
+    this.#placedShips = [];
+    this.successfulAttacks = [];
+    this.missedAttacks = [];
   }
 
   checkFleet() {
@@ -52,53 +60,32 @@ class Gameboard {
   }
 
   placeShip(start, length, vertical) {
-    const [row, column] = start;
     const Ship = new BattleShip(length, vertical);
     const gridsArray = [];
     const shipLength = Ship.size;
 
-    if (Ship.vertical) {
-      for (let i = 0; i < shipLength; i += 1) {
-        gridsArray.push([row + i, column]);
-      }
-      // check if proposed position is currently occupied by an existing ship
-      const isOccupied = gridsArray.some(
-        (position) =>
-          this.board[position[0]][position[1]] instanceof BattleShip,
-      );
-      if (isOccupied) {
-        return 'Position Occupied';
-      }
-      // place ship at specified coordinates
-      for (let i = 0; i < shipLength; i += 1) {
-        this.board[row + i][column] = Ship; // vertical
-        Ship.positions.push([row + i, column]);
+    // adjust cords based on boolean(vertical)
+    for (let i = 0; i < shipLength; i += 1) {
+      const [row, column] = this.adjustCoords(start, i, vertical);
 
-        this.#placedShips.push(Ship);
-      }
-      // horizontal clause
-    } else {
-      for (let i = 0; i < shipLength; i += 1) {
-        gridsArray.push([row, column + i]);
-      }
-      // check if proposed position is currently occupied by an existing ship
-      const isOccupied = gridsArray.some(
-        (position) =>
-          this.board[position[0]][position[1]] instanceof BattleShip,
-      );
-      if (isOccupied) {
-        return 'Position Occupied';
-      }
-      // place ship at specified coordinates
-      for (let i = 0; i < shipLength; i += 1) {
-        this.board[row][column + i] = Ship;
-        Ship.positions.push([row, column + i]);
-        this.#placedShips.push(Ship);
-      }
+      gridsArray.push([row, column]);
     }
+    // check if proposed position is currently occupied by an existing ship
+    const isOccupied = gridsArray.some(
+      (position) => this.board[position[0]][position[1]] instanceof BattleShip,
+    );
+    if (isOccupied) {
+      return 'Position Occupied';
+    }
+    // place ship at specified coordinates
+    for (let i = 0; i < shipLength; i += 1) {
+      const [row, column] = this.adjustCoords(start, i, vertical);
 
-    // console.log(this.board);
-    // console.log(this.#placedShips);
+      this.board[row][column] = Ship;
+      Ship.positions.push([row, column]);
+
+      this.#placedShips.push(Ship);
+    }
     return 'Ship Placed Successfully';
 
     // this.board[row][column] = Ship;
@@ -110,6 +97,56 @@ class Gameboard {
 
   get placedShips() {
     return this.#placedShips;
+  }
+
+  // eslint-disable-next-line
+  adjustCoords(start, i, vertical) {
+    // default - vertical
+    let [x, y] = start;
+    if (vertical) {
+      x += i;
+    } else {
+      y += i;
+    }
+    return [x, y];
+  }
+
+  checkValid(start, length, vertical) {
+    let valid;
+    const [row, col] = start;
+    console.log('starting position:', row, col);
+    console.log('is vertical', vertical);
+    for (let i = 0; i < length; i += 1) {
+      const [r, c] = this.adjustCoords([row, col], i, vertical);
+      console.log(`row: ${r} col: ${c}`);
+      if (r < 10 && c < 10) valid = true;
+      else {
+        console.log('not valid');
+        return false;
+      }
+    }
+    return valid;
+  }
+
+  autoPlace() {
+    const shipSizes = [2, 3, 4, 5];
+
+    shipSizes.forEach((size) => {
+      let placed = false;
+
+      while (!placed) {
+        const randomAxis = Math.random() > 0.5;
+        const randomStart = randomCoords();
+
+        if (this.checkValid(randomStart, size, randomAxis)) {
+          const result = this.placeShip(randomStart, size, randomAxis);
+
+          if (result === 'Ship Placed Successfully') {
+            placed = true;
+          }
+        }
+      }
+    });
   }
 }
 

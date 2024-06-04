@@ -67,3 +67,8 @@
 //     }
 //   }
 // });
+
+const rand = (size = 10) => Math.floor(Math.random() * size);
+
+const randomCoords = (size = 10) => [rand(size), rand(size)];
+export default randomCoords;

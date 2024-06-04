@@ -10,10 +10,6 @@ class GameController {
     return this.player;
   }
 
-  //   set player(player) {
-  //     this.player = player;
-  //   }
-
   get cpu() {
     return this.player2;
   }
@@ -28,9 +24,22 @@ class GameController {
 
     return results;
   }
-  //   resetGame() {}
 
-  //
+  startGame() {
+    const ships = this.player1.board.placedShips;
+    ships.forEach((ship) => {
+      const [row, col] = ship.coords[0];
+      this.player1.board.placeShip([Number(row), col], ship.size, ship.axis);
+    });
+
+    // CPU only for current implementation
+    this.player2.board.autoPlace();
+  }
+
+  resetGame() {
+    this.player1.board.resetBoard();
+    this.player2.board.resetBoard();
+  }
 }
 
 export default GameController;
