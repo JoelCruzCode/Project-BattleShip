@@ -1,5 +1,5 @@
 import BattleShip from './battleship';
-import randomCoords from './helper';
+import { randomCoords } from './helper';
 
 class Gameboard {
   #board;
@@ -25,6 +25,7 @@ class Gameboard {
   }
 
   receiveAttack(row, column) {
+    console.log('these are the placed ships:', this.placedShips);
     const isAlreadyMissed = this.missedAttacks.some(
       (coords) => coords[0] === row && coords[1] === column,
     );
@@ -32,8 +33,6 @@ class Gameboard {
     const isAlreadyHit = this.successfulAttacks.some(
       (coords) => coords[0] === row && coords[1] === column,
     );
-
-    // console.log(`attacking position ${row}, ${column}`);
 
     if (isAlreadyMissed || isAlreadyHit) {
       return 'you already targeted this position, try again';
@@ -64,12 +63,16 @@ class Gameboard {
     const gridsArray = [];
     const shipLength = Ship.size;
 
+    console.log('is vertical?', vertical);
     // adjust cords based on boolean(vertical)
     for (let i = 0; i < shipLength; i += 1) {
+      // const formattedStart = start.length < 2 ? `0${start}` : start;
       const [row, column] = this.adjustCoords(start, i, vertical);
-
       gridsArray.push([row, column]);
     }
+    console.log('grids Array: ', gridsArray);
+    console.log('this.board:', this.board);
+
     // check if proposed position is currently occupied by an existing ship
     const isOccupied = gridsArray.some(
       (position) => this.board[position[0]][position[1]] instanceof BattleShip,
@@ -79,6 +82,8 @@ class Gameboard {
     }
     // place ship at specified coordinates
     for (let i = 0; i < shipLength; i += 1) {
+      // const formattedStart = start.length < 2 ? `0${start}` : start;
+
       const [row, column] = this.adjustCoords(start, i, vertical);
 
       this.board[row][column] = Ship;
@@ -101,13 +106,19 @@ class Gameboard {
 
   // eslint-disable-next-line
   adjustCoords(start, i, vertical) {
+    // const formattedStart = start.length < 2 ? `0${start}` : start;
+
     // default - vertical
     let [x, y] = start;
-    if (vertical) {
+
+    x = Number(x);
+    y = Number(y);
+    if (vertical === 'vertical') {
       x += i;
     } else {
       y += i;
     }
+
     return [x, y];
   }
 
@@ -137,7 +148,6 @@ class Gameboard {
       while (!placed) {
         const randomAxis = Math.random() > 0.5;
         const randomStart = randomCoords();
-
         if (this.checkValid(randomStart, size, randomAxis)) {
           const result = this.placeShip(randomStart, size, randomAxis);
 
