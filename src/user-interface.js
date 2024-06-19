@@ -1,11 +1,8 @@
 import './styles/style.css';
 import './styles/fonts.css';
-// import GameController from './game-controller';
 
-// import Player from './player';
 import BattleShip from './battleship';
 import GameController from './game-controller';
-// import GameController from './game-controller';
 
 // function removeListener(type, element, listener) {
 //   element.removeEventListener(type, listener);
@@ -98,7 +95,7 @@ class UserInterface {
   createGrid(board, element) {
     const container = element;
     container.dataset.value =
-      container.dataset.index === 1 ? this.player1Name : this.player2Name;
+      container.dataset.index === '1' ? this.player1Name : this.player2Name;
     for (let i = 0; i < board.length; i += 1) {
       for (let j = 0; j < board.length; j += 1) {
         const grid = document.createElement('div');
@@ -117,9 +114,9 @@ class UserInterface {
   startUserInterface = (event) => {
     event.preventDefault();
 
-    // Check that user has placed all ships on board
+    // Check if user has placed all ships on board
     if (this.placedShipsUI.length === 4) {
-      this.gameController.startGame();
+      this.gameController.startGame(this.placedShipsUI);
       this.createGrid(this.player2Board, this.container2);
 
       this.startBtn.classList.add('hidden');
@@ -135,7 +132,10 @@ class UserInterface {
       this.mouseLeave = this.hoverHandler.bind(this, false);
 
       // Add the new event listeners
-      this.shipData.size = 1;
+      const startGameHoverData = {
+        size: 1,
+      };
+      this.shipData = startGameHoverData;
       this.container2.addEventListener('click', this.AttackCoordinator);
       this.container2.addEventListener('mouseenter', this.mouseEnter, true);
       this.container2.addEventListener('mouseleave', this.mouseLeave, true);
@@ -163,7 +163,7 @@ class UserInterface {
     this.description.textContent = `Game over, ${attacker.name} wins!`;
     this.options.classList.remove('hidden');
     this.resetBtn.classList.remove('hidden');
-    this.container1.removeEventListener('click', this.AttackCoordinator);
+    this.container2.removeEventListener('click', this.AttackCoordinator);
     this.container2.removeEventListener('click', this.fleetContainer);
     this.container2.removeEventListener('mouseenter', this.mouseEnter, true);
     this.container2.removeEventListener('mouseleave', this.mouseLeave, true);
@@ -174,22 +174,49 @@ class UserInterface {
   displayAttackResult(results, event) {
     const { attack, attacker, fleetSunk, ship } = results;
     this.description.textContent = attack;
-    if (attack === 'you already targeted this position, try again') {
-      console.log('move this clause');
-    } else if (attack === 'Successful hit') {
+    if (attack === 'Successful hit') {
       event.target.classList.add('hit'); // orange
     } else if (attack === 'Ship sinking') {
       // traverse the positions of the sinking ship to update the UI(red)
       ship.positions.forEach((pos) => {
         const [r, c] = pos;
         const container = event.target.parentNode.id;
+
         const gridEl = document.querySelector(
           `#${container} [data-value="[${r},${c}]"]`,
         );
+        console.log('gridEl:', gridEl);
         gridEl.classList.add('sunk');
       });
     } else {
       event.target.classList.add('miss');
+    }
+    if (fleetSunk) {
+      this.gameOverUserInterface(attacker);
+    }
+  }
+
+  displayCPUAttack(results) {
+    const { attack, attacker, fleetSunk, ship, coords } = results;
+    const index =
+      `${coords[0]}${coords[1]}` < 10 ? coords[1] : `${coords[0]}${coords[1]}`;
+    const container = this.container1;
+
+    if (attack === 'Successful hit') {
+      // console.log(children[index]);
+      container.children[index].classList.add('hit');
+    } else if (attack === 'Ship sinking') {
+      // traverse the positions of the sinking ship to update the UI(red)
+      ship.positions.forEach((pos) => {
+        const [r, c] = pos;
+        const containerId = container.id;
+        const gridEl = document.querySelector(
+          `#${containerId} [data-value="[${r},${c}]"]`,
+        );
+        gridEl.classList.add('sunk');
+      });
+    } else {
+      container.children[index].classList.add('miss');
     }
     if (fleetSunk) {
       this.gameOverUserInterface(attacker);
@@ -201,8 +228,14 @@ class UserInterface {
       const index = event.target.dataset.value;
       const playerName = event.target.parentNode.dataset.value;
       const [row, column] = JSON.parse(index);
-      const results = this.gameController.attack(playerName, row, column);
+      const results = this.gameController.attackCoordinator(
+        playerName,
+        row,
+        column,
+      );
       this.displayAttackResult(results, event);
+
+      if (results.counterResults) this.displayCPUAttack(results.counterResults);
     }
   };
 
@@ -242,8 +275,6 @@ class UserInterface {
 
       // Remove the previous event listeners if they exists
       if (this.currentHandler) {
-        console.log('Removing previous handlers');
-
         this.container1.removeEventListener('click', this.currentHandler);
         this.container1.removeEventListener(
           'mouseenter',
@@ -268,15 +299,11 @@ class UserInterface {
     }
   };
 
-  // FIXME stop placedShips from being deleted. also update coords instead of pushing new coords
-
   // Define the event listener function
   clickHandler = (shipData, e) => {
     const containerChildren = this.container1.children;
-    console.log('Data', shipData);
     let positionAvailable = true;
     let inBound = true;
-    console.log('target', e.target);
 
     if (e.target.classList.contains('grid')) {
       this.placedShipsUI.forEach((ship, index) => {
@@ -284,7 +311,6 @@ class UserInterface {
 
         // TODO might add another check to verify that e.targets entire index is within bound to validate remove of preexisting sized ship
         if (ship.size === shipData.size) {
-          console.log(' Found same size ship, removing previous ship..');
           ship.coords.forEach((coord) => {
             containerChildren[coord].classList.remove('ship');
           });
@@ -304,8 +330,8 @@ class UserInterface {
         } else {
           c = column + i;
         }
+        // Reformat index for 1 digit values
         index = `${r}${c}` < 10 ? c : `${r}${c}`;
-        // make sure index is not out of bounds
 
         shipData.coords.push(index);
       }
@@ -325,6 +351,7 @@ class UserInterface {
         shipData.coords.forEach((coord) =>
           containerChildren[coord].classList.add('ship'),
         );
+
         this.placedShipsUI.push(shipData);
         console.log('placedShipsUI:', this.placedShipsUI);
         return;
@@ -361,7 +388,12 @@ class UserInterface {
         );
       }
       if (this.shipData) {
-        this.shipData.axis = event.target.textContent.toLowerCase();
+        // create new object to avoid overwriting previous placed ship axis property
+        this.shipData = {
+          size: this.shipData.size,
+          axis: event.target.textContent.toLowerCase(),
+          coords: [],
+        };
 
         // Create new handlers with the current size and axis
         this.currentHandler = this.clickHandler.bind(this, this.shipData);
